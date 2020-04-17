@@ -1,0 +1,98 @@
+logging:
+  level:
+    root: DEBUG
+    org.springframework.web.reactive.function.client.ExchangeFunctions: DEBUG
+    org.hibernate.type.descriptor.sql: trace
+  file:
+    path: target/logs
+
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: local
+  datasource:
+    hikari:
+      minimum-idle: 3
+      maximum-pool-size: 10
+      connection-timeout: 30000
+      idle-timeout: 600000
+      validation-timeout: 40000
+    sql-script-encoding: UTF-8
+    initialization-mode: never
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate.show_sql: true
+      hibernate.use_sql_comments: true
+      hibernate.format_sql: true
+      hibernate.query.in_clause_parameter_padding: true
+    open-in-view: false
+  jackson:
+    default-property-inclusion: non_empty
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+    use-code-as-default-message: true
+
+
+auth:
+  jwt:
+    secretKey: mySecretKey
+    issuer: odysseymoon
+    expireDays: 30
+
+#local
+---
+spring:
+  profiles: local
+  datasource:
+    url: jdbc:mysql://localhost:13306/testDB?useUnicode=yes&characterEncoding=UTF-8
+    username: ENC(iz8p6xZ6Or+gbMphJu8VsHIHwNGKNgVW)
+    password: ENC(tDUfykZXyTthimgZT35ECw+GpX0y/TZz)
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    host: localhost
+    port: 16379
+    password: ENC(RE0TFEbdNyRMb+IwbeLLvrhKBAjKmStj)
+    lettuce:
+      pool:
+        min-idle: 2
+        max-idle: 5
+        max-active: 10
+  cache:
+    type: redis
+    redis:
+      cache-null-values: false
+      time-to-live: 60000
+
+
+#Prod
+---
+spring:
+  profiles: prod
+  datasource:
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 50
+      connection-timeout: 30000
+      idle-timeout: 600000
+      validation-timeout: 40000
+    initialization-mode: never
+
+logging:
+  file:
+    max-size: 100MB
+    max-history: 30
+    path: logs
+  level:
+    root: INFO
+    org.springframework.web.reactive.function.client.ExchangeFunctions: INFO
+    org.hibernate.type.descriptor.sql: INFO
