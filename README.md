@@ -409,6 +409,7 @@ Spring WebFlux에 Redis를 적용하기 위한 방식은 기본적으로 Spring 
 `appliction.yaml`을 통해 Redis, Lettuce, Cache 관련 정보를 설정 해주면 바로 사용할 수 있습니다.
 Reactive Template들을 추가로 사용 가능하게 하기 위해서 Reactive 관련 Bean을 추가로 설정 해 줍니다.
 
+- `application.yaml`
 ```yaml
 spring:
   redis:
@@ -806,7 +807,7 @@ public class BearerSecurityContextRepository implements ServerSecurityContextRep
                                              .orElseGet(Mono::empty)
                   )
                   .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not found token, Please signIn again.")))
-                  .map(token -> new UsernamePasswordAuthenticationToken(token, token))
+                  .map(token -> new UsernamePasswordAuthenticationToken(token, token))      //필요시 Token 추가 검증
                   .flatMap(authenticationManager::authenticate)
                   .map(SecurityContextImpl::new)
                   ;
