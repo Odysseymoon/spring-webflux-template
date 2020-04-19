@@ -20,7 +20,7 @@ spring:
       idle-timeout: 600000
       validation-timeout: 40000
     sql-script-encoding: UTF-8
-    initialization-mode: never
+    initialization-mode: always
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
