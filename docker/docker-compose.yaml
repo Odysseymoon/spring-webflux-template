@@ -19,11 +19,11 @@ services:
       MYSQL_USER: testUser
       MYSQL_PASSWORD: testPassword
 
-  redis:
-    image: redis:5.0.8
-    container_name: webflux-redis
-    hostname: redis
-    command: redis-server --appendonly yes --requirepass redis12&*
+  valkey:
+    image: valkey/valkey:7.2-alpine
+    container_name: webflux-valkey
+    hostname: valkey
+    command: valkey-server --appendonly yes --requirepass redis12&*
     restart: always
     ports:
       - "16379:6379"

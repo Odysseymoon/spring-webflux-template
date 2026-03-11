@@ -252,3 +252,4 @@ local.properties
 .worksheet
 
 /spring-webflux-template.iml
+/.idea/

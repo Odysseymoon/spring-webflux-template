@@ -2,7 +2,8 @@ logging:
   level:
     root: DEBUG
     org.springframework.web.reactive.function.client.ExchangeFunctions: DEBUG
-    org.hibernate.type.descriptor.sql: trace
+    org.hibernate.orm.jdbc.bind: trace
+    org.hibernate.orm.jdbc.extract: trace
   file:
     path: target/logs
 
@@ -19,11 +20,13 @@ spring:
       connection-timeout: 30000
       idle-timeout: 600000
       validation-timeout: 40000
-    sql-script-encoding: UTF-8
-    initialization-mode: always
+  sql:
+    init:
+      encoding: UTF-8
+      mode: always
   jpa:
     database: mysql
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: true
     hibernate:
       ddl-auto: validate
@@ -52,32 +55,39 @@ auth:
 #local
 ---
 spring:
-  profiles: local
+  config:
+    activate:
+      on-profile: local
   datasource:
     url: jdbc:mysql://localhost:13306/testDB?useUnicode=yes&characterEncoding=UTF-8
     username: ENC(iz8p6xZ6Or+gbMphJu8VsHIHwNGKNgVW)
     password: ENC(tDUfykZXyTthimgZT35ECw+GpX0y/TZz)
     driver-class-name: com.mysql.cj.jdbc.Driver
-  redis:
-    host: localhost
-    port: 16379
-    password: ENC(RE0TFEbdNyRMb+IwbeLLvrhKBAjKmStj)
-    lettuce:
-      pool:
-        min-idle: 2
-        max-idle: 5
-        max-active: 10
+  data:
+    # Spring Boot keeps Redis property names for Valkey-compatible connections.
+    redis:
+      host: localhost
+      port: 16379
+      password: ENC(RE0TFEbdNyRMb+IwbeLLvrhKBAjKmStj)
+      lettuce:
+        pool:
+          min-idle: 2
+          max-idle: 5
+          max-active: 10
   cache:
+    # Spring Cache backend identifiers remain redis/* with Valkey.
     type: redis
     redis:
       cache-null-values: false
-      time-to-live: 60000
+      time-to-live: 60s
 
 
 #Prod
 ---
 spring:
-  profiles: prod
+  config:
+    activate:
+      on-profile: prod
   datasource:
     hikari:
       minimum-idle: 5
@@ -85,14 +95,25 @@ spring:
       connection-timeout: 30000
       idle-timeout: 600000
       validation-timeout: 40000
-    initialization-mode: never
+  sql:
+    init:
+      mode: never
 
 logging:
   file:
-    max-size: 100MB
-    max-history: 30
     path: logs
+  logback:
+    rollingpolicy:
+      max-file-size: 100MB
+      max-history: 30
   level:
     root: INFO
     org.springframework.web.reactive.function.client.ExchangeFunctions: INFO
-    org.hibernate.type.descriptor.sql: INFO
+    org.hibernate.orm.jdbc.bind: INFO
+    org.hibernate.orm.jdbc.extract: INFO
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
